@@ -12,11 +12,11 @@ int main()
     fp = fopen("output.txt","w");
     fprintf(fp,"Tamanho\tClocks\n");   
 
-    int fim = 20000;
+    int fim = 10000;
     float** mat = geraMatriz(fim,fim);
     float* vet = geraVetor(fim);
     
-    int n = 1000;
+    int n = 100;
     while(n<=fim){
         clock_t begin = clock();
         float* tmp = produtoMatrizVetor(mat,vet,n,n,n);
