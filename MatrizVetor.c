@@ -2,78 +2,105 @@
 #include <stdio.h>
 #include <time.h>
 
-float** geraMatriz(int lin, int col);
-float* geraVetor(int dim);
-float* produtoMatrizVetor(float** mat, float* vet, int matLin, int matCol, int vetSize);
+double **geraMatriz(int lin, int col);
+double *geraVetor(int dim);
+double *produtoMatrizVetorLin(double **mat, double *vet, int matLin, int matCol, int vetSize);
+double *produtoMatrizVetorCol(double **mat, double *vet, int matLin, int matCol, int vetSize);
 
 int main()
 {
-    FILE* fp;
-    fp = fopen("output.txt","w");
-    fprintf(fp,"Tamanho\tClocks\n");   
+    FILE *fp;
+    fp = fopen("output-C-Lin.txt", "w");
+    fprintf(fp, "Tamanho\tClocks\n");
 
     int fim = 10000;
-    float** mat = geraMatriz(fim,fim);
-    float* vet = geraVetor(fim);
-    
+    double **mat = geraMatriz(fim, fim);
+    double *vet = geraVetor(fim);
+
     int n = 100;
-    while(n<=fim){
+    while (n <= fim)
+    {
         clock_t begin = clock();
-        float* tmp = produtoMatrizVetor(mat,vet,n,n,n);
+        double *tmp = produtoMatrizVetorLin(mat, vet, n, n, n);
         clock_t end = clock();
-        int clks = (int)(end-begin);
-        fprintf(fp,"%d\t%d\n",n,clks); 
-        n+=1000;
+        int clks = (int)(end - begin);
+        fprintf(fp, "%d\t%d\n", n, clks);
+        n += 100;
     }
     return 0;
 }
 
-float** geraMatriz(int lin, int col)
+double **geraMatriz(int lin, int col)
 {
     time_t t;
     srand(time(&t));
-    float** mat = (float**) malloc(lin*sizeof(float*));
+    double **mat = (double **)malloc(lin * sizeof(double *));
     int i;
-    for(i=0;i<lin;i++){
-        mat[i] = (float*) malloc(col*sizeof(float));
+    for (i = 0; i < lin; i++)
+    {
+        mat[i] = (double *)malloc(col * sizeof(double));
         int j;
-        for(j=0;j<col;j++){
-            float r = 10*((float)rand()/(float)RAND_MAX);
+        for (j = 0; j < col; j++)
+        {
+            double r = 10 * ((double)rand() / (double)RAND_MAX);
             mat[i][j] = r;
         }
     }
     return mat;
 }
 
-float* geraVetor(int dim)
+double *geraVetor(int dim)
 {
     time_t t;
     srand(time(&t));
-    float* vet = (float*) malloc(dim*sizeof(float));
+    double *vet = (double *)malloc(dim * sizeof(double));
     int i;
-    for(i=0;i<dim;i++){
-        float r = 10*((float)rand()/(float)RAND_MAX);
+    for (i = 0; i < dim; i++)
+    {
+        double r = 10 * ((double)rand() / (double)RAND_MAX);
         vet[i] = r;
     }
     return vet;
 }
 
-float* produtoMatrizVetor(float** mat, float* vet, int matLin, int matCol, int vetSize)
+double *produtoMatrizVetorLin(double **mat, double *vet, int matLin, int matCol, int vetSize)
 {
-    if(matCol != vetSize){
+    if (matCol != vetSize)
+    {
         printf("A matriz e o vetor devem ter as mesmas dimensoes");
         return NULL;
     }
 
-    float* ret = (float*) malloc(matLin*sizeof(float));
+    double *ret = (double *)malloc(matLin * sizeof(double));
     int i;
-    for(i=0;i<matLin;i++){
-        float s = 0.0;
+    for (i = 0; i < matLin; i++)
+    {
         int j;
-        for(j=0;j<matCol;j++){
-            s += mat[i][j]*vet[j];
+        for (j = 0; j < matCol; j++)
+        {
+            ret[i] += mat[i][j] * vet[j];
         }
-        ret[i] = s;
+    }
+    return ret;
+}
+
+double *produtoMatrizVetorCol(double **mat, double *vet, int matLin, int matCol, int vetSize)
+{
+    if (matCol != vetSize)
+    {
+        printf("A matriz e o vetor devem ter as mesmas dimensoes");
+        return NULL;
+    }
+
+    double *ret = (double *)malloc(matLin * sizeof(double));
+    int j;
+    for (j = 0; j < matCol; j++)
+    {
+        int i;
+        for (i = 0; i < matLin; i++)
+        {
+            ret[i] += mat[i][j] * vet[j];
+        }
     }
     return ret;
 }
