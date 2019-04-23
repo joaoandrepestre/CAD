@@ -1,4 +1,7 @@
-**/.vscode
-**/MatrizVetor
-**/MatrizVetorFortran
-**/*.mod
+.vscode
+*.out
+*.pdf
+*.txt
+*.mod
+*.odt
+*.directory

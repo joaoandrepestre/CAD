@@ -13,17 +13,32 @@ int main()
     fp = fopen("output-C-Lin.txt", "w");
     fprintf(fp, "Tamanho\tClocks\n");
 
+    clock_t begin, end;
+    int clks;
+
     int fim = 10000;
     double **mat = geraMatriz(fim, fim);
     double *vet = geraVetor(fim);
+    double *tmp;
 
     int n = 100;
     while (n <= fim)
     {
-        clock_t begin = clock();
-        double *tmp = produtoMatrizVetorLin(mat, vet, n, n, n);
-        clock_t end = clock();
-        int clks = (int)(end - begin);
+        begin = clock();
+        tmp = produtoMatrizVetorLin(mat, vet, n, n, n);
+        end = clock();
+        clks = (int)(end - begin);
+        fprintf(fp, "%d\t%d\n", n, clks);
+        n += 100;
+    }
+
+    n = 100;
+    while (n <= fim)
+    {
+        begin = clock();
+        tmp = produtoMatrizVetorLin(mat, vet, n, n, n);
+        end = clock();
+        clks = (int)(end - begin);
         fprintf(fp, "%d\t%d\n", n, clks);
         n += 100;
     }

@@ -74,11 +74,10 @@ module matrix_vector_product
         M = matrix(n(final))
         v = vector(n(final))
         
-        write(*,*) "Tamanho","Clocks"
-        !do i = 1,final
-        !    resultCol = prodCol(M,v,n(i),timeCol)
-        !    write(*,*) n(i),timeCol
-        !end do
+        do i = 1,final
+            resultCol = prodCol(M,v,n(i),timeCol)
+            write(*,*) n(i),timeCol
+        end do
 
         do i = 1,final
             resultRow = prodRow(M,v,n(final),timeRow)
