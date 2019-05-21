@@ -4,6 +4,7 @@
 #include <omp.h>
 
 
+
 int **geraMatriz(int lin, int col);
 int *geraVetor(int dim);
 int *produtoMatrizVetorSequencial(int **mat, int *vet, int matLin, int matCol, int vetSize);
@@ -19,43 +20,52 @@ int main()
     clock_t begin, end;
     int clks;
 
-    int fim = 4;
+    omp_set_num_threads(4);
+
+    int fim = 10000;
     
     int **mat = geraMatriz(fim, fim);
     int *vet = geraVetor(fim);
     int *tmp;
 
-    printf("AQUI ESTÁ A MATRIZ: \n\n");
-    for (int i = 0; i < fim; i++) {
-        for(int j = 0; j < fim; j++){
-            printf("%d ", mat[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n\n");
+    //printf("AQUI ESTÁ A MATRIZ: \n\n");
+    //for (int i = 0; i < fim; i++) {
+    //    for(int j = 0; j < fim; j++){
+    //        printf("%d ", mat[i][j]);
+    //    }
+    //    printf("\n");
+    //}
+    //printf("\n\n");
 
-    printf("AQUI ESTÁ O VETOR: \n\n");
-    for (int i = 0; i < fim; i++) {
-        printf("%d ", vet[i]);
-    }
-    printf("\n\n");
+    //printf("AQUI ESTÁ O VETOR: \n\n");
+    //for (int i = 0; i < fim; i++) {
+    //    printf("%d ", vet[i]);
+    //}
+    //printf("\n\n");
 
     
-    double wtime = omp_get_wtime();
+    double wtime_p = omp_get_wtime();
 
-    //tmp = produtoMatrizVetorSequencial(mat, vet, fim, fim, fim);
     tmp = produtoMatrizVetorParalelo(mat, vet, fim, fim, fim);
 
-    wtime = omp_get_wtime() - wtime;
+    wtime_p = omp_get_wtime() - wtime_p;
+    printf("PARALELO DEMOROU %f SEGUNDOS\n", wtime_p);
 
+    
+    
+    double wtime_s = omp_get_wtime();
+    tmp = produtoMatrizVetorSequencial(mat, vet, fim, fim, fim);
+    
+    wtime_s = omp_get_wtime() - wtime_s;
+    printf("SEQUENCIAL DEMOROU %f SEGUNDOS\n", wtime_s);
 
-    printf("AQUI ESTÁ O RESULTADO: \n\n");
-    for (int i = 0; i < fim; i++) {
-        printf("%d ", tmp[i]);
-    }
-    printf("\n\n");
+    printf("TEMPO ECONOMIZADO COM OPENMP %f SEGUNDOS\n", (wtime_s - wtime_p));
+    //printf("AQUI ESTÁ O RESULTADO: \n\n");
+    //for (int i = 0; i < fim; i++) {
+    //    printf("%d ", tmp[i]);
+    //}
+    //printf("\n\n");
 
-    printf("DEMOROU %f SEGUNDOS\n", wtime);
 
 
 
