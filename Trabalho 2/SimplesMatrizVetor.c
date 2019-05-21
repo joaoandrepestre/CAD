@@ -101,10 +101,11 @@ int *produtoMatrizVetorParalelo(int **mat, int *vet, int matLin, int matCol, int
 
     int *ret = (int *)malloc(matLin * sizeof(int));
     
-    int i, j;
     #pragma omp parallel
     {
         int *ret_thread = (int *)malloc(matLin * sizeof(int));
+        int i, j;   
+
         for (i = 0; i < matLin; i++)
         {
             #pragma omp for
@@ -117,7 +118,6 @@ int *produtoMatrizVetorParalelo(int **mat, int *vet, int matLin, int matCol, int
     
         #pragma omp critical
         {
-            
             for (i=0; i < matLin; i++) {
                 ret[i] += ret_thread[i];
             }
