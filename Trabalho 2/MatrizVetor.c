@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <omp.h>
 
 double **geraMatriz(int lin, int col);
 double *geraVetor(int dim);
@@ -17,6 +18,8 @@ int main()
     int clks;
 
     int fim = 10000;
+    //omp_set_num_threads(10);
+
     double **mat = geraMatriz(fim, fim);
     double *vet = geraVetor(fim);
     double *tmp;
@@ -86,14 +89,25 @@ double *produtoMatrizVetorLin(double **mat, double *vet, int matLin, int matCol,
         return NULL;
     }
 
+    double *ret_thread = (double *)malloc(matLin * sizeof(double));
     double *ret = (double *)malloc(matLin * sizeof(double));
-    int i;
+    
+    int i, j;
+    #pragma omp parallel
     for (i = 0; i < matLin; i++)
     {
-        int j;
+        #pragma omp for
         for (j = 0; j < matCol; j++)
         {
-            ret[i] += mat[i][j] * vet[j];
+            ret_thread[i] += mat[i][j] * vet[j];
+        }
+    }
+
+    #pragma omp critical
+    {
+        
+        for (i=0; i < matLin; i++) {
+            ret[i] += ret_thread[i];
         }
     }
     return ret;
