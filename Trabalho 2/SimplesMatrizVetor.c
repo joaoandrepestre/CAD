@@ -3,6 +3,13 @@
 #include <time.h>
 #include <omp.h>
 
+//Otimizações
+// 0. USAR O LIN DO C (MAIS EFICIENTE NO ULTIMO TRABALHO)
+// 1. INSERIR O OMP FOR (junto com o parallel, que era requerido)
+// 2. DEFINIR SET NUM THREADS == NUM CORES
+// 3. FLAG DE OTIMIZAÇÂO (não funcionou)
+
+// COM ESSES DOIS, CONSISTENTEMENTE DOBRA OTIMIZAÇÃO
 
 
 int **geraMatriz(int lin, int col);
