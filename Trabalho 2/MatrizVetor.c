@@ -1,25 +1,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <omp.h>
 
 double **geraMatriz(int lin, int col);
 double *geraVetor(int dim);
-double *produtoMatrizVetorLin(double **mat, double *vet, int matLin, int matCol, int vetSize);
-double *produtoMatrizVetorCol(double **mat, double *vet, int matLin, int matCol, int vetSize);
+double *produtoMatrizVetorParalelo(double **mat, double *vet, int matLin, int matCol, int vetSize);
+double *produtoMatrizVetorSequencial(double **mat, double *vet, int matLin, int matCol, int vetSize);
 
 int main()
 {
     FILE *fp;
-    fp = fopen("output-C-Lin.txt", "w");
-    fprintf(fp, "Tamanho\tClocks\n");
+    fp = fopen("output-graph.csv", "w");
+    fprintf(fp, "Tamanho,Tempo (s)\n");
 
     clock_t begin, end;
     int clks;
 
     int fim = 10000;
-    //omp_set_num_threads(10);
-
     double **mat = geraMatriz(fim, fim);
     double *vet = geraVetor(fim);
     double *tmp;
@@ -28,7 +25,7 @@ int main()
     while (n <= fim)
     {
         begin = clock();
-        tmp = produtoMatrizVetorLin(mat, vet, n, n, n);
+        tmp = produtoMatrizVetorParalelo(mat, vet, n, n, n);
         end = clock();
         clks = (int)(end - begin);
         fprintf(fp, "%d\t%d\n", n, clks);
@@ -39,7 +36,7 @@ int main()
     while (n <= fim)
     {
         begin = clock();
-        tmp = produtoMatrizVetorLin(mat, vet, n, n, n);
+        tmp = produtoMatrizVetorSequencial(mat, vet, n, n, n);
         end = clock();
         clks = (int)(end - begin);
         fprintf(fp, "%d\t%d\n", n, clks);
@@ -81,7 +78,7 @@ double *geraVetor(int dim)
     return vet;
 }
 
-double *produtoMatrizVetorLin(double **mat, double *vet, int matLin, int matCol, int vetSize)
+double *produtoMatrizVetorParalelo(double **mat, double *vet, int matLin, int matCol, int vetSize)
 {
     if (matCol != vetSize)
     {
@@ -89,31 +86,20 @@ double *produtoMatrizVetorLin(double **mat, double *vet, int matLin, int matCol,
         return NULL;
     }
 
-    double *ret_thread = (double *)malloc(matLin * sizeof(double));
     double *ret = (double *)malloc(matLin * sizeof(double));
-    
-    int i, j;
-    #pragma omp parallel
+    int i;
     for (i = 0; i < matLin; i++)
     {
-        #pragma omp for
+        int j;
         for (j = 0; j < matCol; j++)
         {
-            ret_thread[i] += mat[i][j] * vet[j];
-        }
-    }
-
-    #pragma omp critical
-    {
-        
-        for (i=0; i < matLin; i++) {
-            ret[i] += ret_thread[i];
+            ret[i] += mat[i][j] * vet[j];
         }
     }
     return ret;
 }
 
-double *produtoMatrizVetorCol(double **mat, double *vet, int matLin, int matCol, int vetSize)
+double *produtoMatrizVetorSequencial(double **mat, double *vet, int matLin, int matCol, int vetSize)
 {
     if (matCol != vetSize)
     {
@@ -122,11 +108,11 @@ double *produtoMatrizVetorCol(double **mat, double *vet, int matLin, int matCol,
     }
 
     double *ret = (double *)malloc(matLin * sizeof(double));
-    int j;
-    for (j = 0; j < matCol; j++)
+    int i;
+    for (i = 0; i < matLin; i++)
     {
-        int i;
-        for (i = 0; i < matLin; i++)
+        int j;
+        for (j = 0; j < matCol; j++)
         {
             ret[i] += mat[i][j] * vet[j];
         }
