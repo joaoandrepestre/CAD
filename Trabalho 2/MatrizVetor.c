@@ -16,6 +16,8 @@ int main()
     clock_t begin, end;
     int clks;
 
+    omp_set_num_threads(4);
+
     int fim = 10000;
     double **mat = geraMatriz(fim, fim);
     double *vet = geraVetor(fim);
@@ -109,7 +111,7 @@ double *produtoMatrizVetorParalelo(double **mat, double *vet, int matLin, int ma
             }
         }
     }
-    
+
     return ret;
 }
 
