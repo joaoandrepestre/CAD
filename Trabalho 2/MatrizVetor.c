@@ -26,22 +26,26 @@ int main()
     int n = 100;
     while (n <= fim)
     {
-        begin = clock();
+
+        double wtime_p = omp_get_wtime();
+
         tmp = produtoMatrizVetorParalelo(mat, vet, n, n, n);
-        end = clock();
-        clks = (int)(end - begin);
-        fprintf(fp, "%d\t%d\n", n, clks);
+
+        wtime_p = omp_get_wtime() - wtime_p;
+        fprintf(fp, "PARALELO,%d\t%d\n", n, wtime_p);
         n += 100;
     }
 
     n = 100;
     while (n <= fim)
     {
-        begin = clock();
+        double wtime_s = omp_get_wtime();
+
         tmp = produtoMatrizVetorSequencial(mat, vet, n, n, n);
-        end = clock();
-        clks = (int)(end - begin);
-        fprintf(fp, "%d\t%d\n", n, clks);
+
+        wtime_s = omp_get_wtime() - wtime_s;
+        
+        fprintf(fp, "SEQUENCIAL,%d\t%d\n", n, wtime_s);
         n += 100;
     }
     return 0;
