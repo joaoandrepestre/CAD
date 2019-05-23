@@ -32,7 +32,7 @@ int main()
         tmp = produtoMatrizVetorParalelo(mat, vet, n, n, n);
 
         wtime_p = omp_get_wtime() - wtime_p;
-        fprintf(fp, "PARALELO,%d\t%d\n", n, wtime_p);
+        fprintf(fp, "PARALELO,%d,%d\n", n, wtime_p);
         n += 100;
     }
 
@@ -45,7 +45,7 @@ int main()
 
         wtime_s = omp_get_wtime() - wtime_s;
         
-        fprintf(fp, "SEQUENCIAL,%d\t%d\n", n, wtime_s);
+        fprintf(fp, "SEQUENCIAL,%d,%d\n", n, wtime_s);
         n += 100;
     }
     return 0;
