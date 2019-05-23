@@ -14,9 +14,7 @@ int main()
     fp = fopen("output-graph.csv", "w");
     fprintf(fp, "Tipo de Execução,Tamanho,Tempo (s)\n");
 
-    clock_t begin, end;
-    int clks;
-
+    double wtime_p, wtime_s;
     omp_set_num_threads(4);
 
     int fim = 10000;
@@ -28,7 +26,7 @@ int main()
     while (n <= fim)
     {
 
-        double wtime_p = omp_get_wtime();
+        wtime_p = omp_get_wtime();
 
         tmp = produtoMatrizVetorParalelo(mat, vet, n, n, n);
 
@@ -40,7 +38,7 @@ int main()
     n = 100;
     while (n <= fim)
     {
-        double wtime_s = omp_get_wtime();
+        wtime_s = omp_get_wtime();
 
         tmp = produtoMatrizVetorSequencial(mat, vet, n, n, n);
 
@@ -54,8 +52,6 @@ int main()
 
 double **geraMatriz(int lin, int col)
 {
-    time_t t;
-    srand(time(&t));
     double **mat = (double **)malloc(lin * sizeof(double *));
     int i;
     for (i = 0; i < lin; i++)
@@ -73,8 +69,6 @@ double **geraMatriz(int lin, int col)
 
 double *geraVetor(int dim)
 {
-    time_t t;
-    srand(time(&t));
     double *vet = (double *)malloc(dim * sizeof(double));
     int i;
     for (i = 0; i < dim; i++)
