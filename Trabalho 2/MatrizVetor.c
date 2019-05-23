@@ -12,7 +12,7 @@ int main()
 {
     FILE *fp;
     fp = fopen("output-graph.csv", "w");
-    fprintf(fp, "Tamanho,Tempo (s)\n");
+    fprintf(fp, "Tipo de Execução,Tamanho,Tempo (s)\n");
 
     clock_t begin, end;
     int clks;
@@ -94,18 +94,21 @@ double *produtoMatrizVetorParalelo(double **mat, double *vet, int matLin, int ma
     }
 
     double *ret = (double *)malloc(matLin * sizeof(double));
+   
 
-    #pragma omp parallel
+    #pragma omp parallel 
     {
         double *ret_thread = (double *)malloc(matLin * sizeof(double));
         int i, j;
-        
+
+        #pragma omp for
         for (i = 0; i < matLin; i++)
         {
-            #pragma omp for
+
+            
             for (j = 0; j < matCol; j++)
             {
-                ret[i] += mat[i][j] * vet[j];
+                ret_thread[i] += mat[i][j] * vet[j];
             }
         }
         
